@@ -1,7 +1,7 @@
 // Fichier: main.js
 
 // !!! IMPORTANT: Remplacez cette URL par l'URL de votre application web Google Apps Script que vous avez copiée !!!
-const SCRIPT_WEB_APP_URL = 'VOTRE_URL_DE_L_APPLICATION_WEB_GOOGLE_APPS_SCRIPT';
+const SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxHRGkI0jSjE9zwlSyuMqZhRpg4tH01UcqdiqpfAR-GZJj0B2f62Q10A92h1_Xw41En9w/exec';
 
 // --- Fonctions utilitaires pour interagir avec le Google Apps Script ---
 async function fetchData(action, params = {}) {
