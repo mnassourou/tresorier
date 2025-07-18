@@ -2,13 +2,13 @@
 
 // !!! IMPORTANT: Remplacez cette URL par l'URL de votre application web Google Apps Script que vous avez copiée !!!
 // Cette URL commence par 'https://script.google.com/macros/s/...'
-const SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxHRGkI0jSjE9zwlSyuMqZhRpg4tH01UcqdiqpfAR-GZJj0B2f62Q10A92h1_Xw41En9w/exec'; // URL corrigée
-
+const SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxHRGkI0jSjE9zwlSyuMqZhRpg4tH01UcqdiqpfAR-GZJj0B2f62Q10A92h1_Xw41En9w/exec'; 
 
 // --- Fonctions utilitaires pour interagir avec le Google Apps Script ---
 
 /**
  * Effectue une requête GET vers l'API Apps Script.
+ * Utilise la méthode fetch standard avec CORS.
  * @param {string} action - L'action à effectuer sur l'API.
  * @param {object} params - Les paramètres à envoyer avec la requête.
  * @returns {Promise<object>} Une promesse qui résout avec les données de la réponse.
@@ -28,6 +28,7 @@ async function fetchData(action, params = {}) {
         });
 
         if (!response.ok) {
+            // Tente de lire le message d'erreur du serveur si disponible
             const errorText = await response.text();
             throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}. Réponse: ${errorText}`);
         }
@@ -131,18 +132,18 @@ async function loadDashboardData() {
         const montant = parseFloat(r.Montant);
         if (isNaN(montant)) return;
         if (r.CanaldePaiement === 'Espèces') soldeEspeces += montant;
-        else if (r.CanaldePaiement === 'Virement bancaire' || r.CanaldePaiement === 'Chèque') soldeBancaire += montant;
-        else if (r.CanaldePaiement === 'Orange Money') soldeOrangeMoney += montant;
-        else if (r.CanaldePaiement === 'MTN Mobile Money') soldeMtnMoney += montant;
+        else if (r.CanaldePaiement === 'Virementbancaire' || r.CanaldePaiement === 'Chèque') soldeBancaire += montant; // Assurez-vous que les noms des colonnes sont corrects après nettoyage
+        else if (r.CanaldePaiement === 'OrangeMoney') soldeOrangeMoney += montant;
+        else if (r.CanaldePaiement === 'MTNMobileMoney') soldeMtnMoney += montant;
     });
 
     expenses.forEach(e => {
         const montant = parseFloat(e.Montant);
         if (isNaN(montant)) return;
         if (e.CanaldePaiement === 'Espèces') soldeEspeces -= montant;
-        else if (e.CanaldePaiement === 'Virement bancaire' || e.CanaldePaiement === 'Chèque' || e.CanaldePaiement === 'Carte bancaire') soldeBancaire -= montant;
-        else if (e.CanaldePaiement === 'Orange Money') soldeOrangeMoney -= montant;
-        else if (e.CanaldePaiement === 'MTN Mobile Money') soldeMtnMoney -= montant;
+        else if (e.CanaldePaiement === 'Virementbancaire' || e.CanaldePaiement === 'Chèque' || e.CanaldePaiement === 'Cartebancaire') soldeBancaire -= montant;
+        else if (e.CanaldePaiement === 'OrangeMoney') soldeOrangeMoney -= montant;
+        else if (e.CanaldePaiement === 'MTNMobileMoney') soldeMtnMoney -= montant;
     });
 
     soldeTotal = soldeEspeces + soldeBancaire + soldeOrangeMoney + soldeMtnMoney;
@@ -327,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setDefaultDate('expenseDate');
 });
 
-// Rappel IMPORTANT sur les noms de colonnes et Google Apps Script:
+// REMARQUES IMPORTANTES sur les noms de colonnes et Google Apps Script:
 // Google Apps Script a une particularité: il retire les espaces et les caractères spéciaux
 // des noms d'en-têtes de colonnes lorsqu'il les transforme en clés d'objets JavaScript.
 // Exemple: "Membre concerné" devient "Membreconcerné".
